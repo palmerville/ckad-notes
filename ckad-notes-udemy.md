@@ -240,7 +240,7 @@ spec:
 
 ### Practice on imperative commands
 - notable part of practice labs was when a pod needs to have a clusterIP service also exposing its port, use --expose
-- how i solved this though is by seeing that the label for pod is "run=http" while selector of svc is "app=httpd"
+- how i solved this though is by seeing that the label for pod is "run=httpd" while selector of svc is "app=httpd"
 
 # Configuration
 
