@@ -95,13 +95,108 @@ Then edit the file to make the necessary changes, delete, and re-create the pod.
 
 ### ReplicaSet
 
+- Ensures that there is always the node is running specified pods 
+- In case of crashes, it will try to maintain state by bringing up new instance
+- helps load balancing
+- Replication Controller - older tech than Replica Set
 
+#### Sample Replication Controller
+```yml
+apiVersion: v1          # NOTE diff from ReplicaSet
+kind: ReplicationController
+metadata:               # dictionary (2 spaces for tab-ish)
+  name: myapp-rc
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  template:                     # define a pod template
+    metadata:                   # dictionary (2 spaces for tab-ish)
+      name: myapp-pod
+      labels:
+        app: mypod
+        type: front-end
+    spec:
+      containers:                   # List/Array (of containers)
+        - name: nginx-container     # dash indicates it is item of list
+          image: nginx
+  replicas: 3
+```
 
+#### Sample ReplicaSet
+```yml
+apiVersion: apps/v1          # NOTE this diff from Replication Controller
+kind: ReplicationController
+metadata:               # dictionary (2 spaces for tab-ish)
+  name: myapp-rc
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  template:                     # define a pod template
+    metadata:                   # dictionary (2 spaces for tab-ish)
+      name: myapp-pod
+      labels:
+        app: mypod
+        type: front-end
+    spec:
+      containers:                   # List/Array (of containers)
+        - name: nginx-container     # dash indicates it is item of list
+          image: nginx
+  replicas: 3
+  selector:                         # MAJOR DIFF from replication controller 
+    matchLabels:
+      type: front-end
+```
+#### NOTES:
+- error when "v1" is used for ReplicaSet
+  - error: unable to recognize "<yaml def name>.yaml": no matches for /, Kind=ReplicaSet
+- Needs selector because ReplicaSet can also manage pods that were not created as p:w
+art of the ReplicaSet.
+  - i.e. pods that were created before the creation of ReplicaSet with matching labels
 
+#### Labels and Selectors
+- Example: 
+  - current deployed pods of label: front-end is 2, 
+  - replicaSet is created with 3 replicas in spec.
+  - replicaSet brings up 1 more pod to match its spec
+  - To know which kind of pod to bring up, it will need the pod label.
+- Acts as filters for ReplicaSet for pod monitoring
 
+#### Scaling with ReplicaSet
+- increase replicas in ReplicaSet spec. Then k replace -f
+- k scale --replicas=N filename OR TYPE NAME
+- using filename will not update the replicas in file.
 
+### Deployments
+- Rolling Updates, Rollback, Canary and Blue/Green, pause and play changes
+- Containers are contained in pods, pods monitored by ReplicaSet, Deployment is higher
 
-
+#### Sample Deployment
+```yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:               # dictionary (2 spaces for tab-ish)
+  name: myapp-deployment
+  labels:
+    app: myapp
+    type: front-end
+spec:                           # Very much like a ReplicaSet spec
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: mypod
+        type: front-end
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+  replicas: 3
+  selector:                         # MAJOR DIFF from replication controller 
+    matchLabels:
+      type: front-end
+```
 
 
 
