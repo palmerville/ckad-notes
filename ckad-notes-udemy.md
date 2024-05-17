@@ -198,5 +198,49 @@ spec:                           # Very much like a ReplicaSet spec
       type: front-end
 ```
 
+### Namespaces
+- default: user defined objects default namespace
+  - should be fine for most playground stuff
+- kube-system: networking stuff for k8s. must be away from user
+- kube-public: resources for all users
+- create new namespaces for things like Environment isolation.
+- DNS
+  - db-service for local namespace
+  - db-service.dev.svc.cluster.local
+  - ".dev.svc.cluster.local" DNS entry added in this format when service is created
+    - default domain name - cluster.local
+    - service - svc
+    - namespace - dev
+    - service name - db-service
 
+```
+k get pods
+k get pods --namespace=namespace-name
+```
+```yml
+metadata:
+  namespace: namespace-name           # for pods
+```
+
+#### Resource Quota sample
+```yml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: dev
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "4"
+    requests.memory: 5Gi
+    limits.cpu: "10"
+    limits.memory: 10Gi
+```
+
+### Practice on imperative commands
+- notable part of practice labs was when a pod needs to have a clusterIP service also exposing its port, use --expose
+- how i solved this though is by seeing that the label for pod is "run=http" while selector of svc is "app=httpd"
+
+# Configuration
 
