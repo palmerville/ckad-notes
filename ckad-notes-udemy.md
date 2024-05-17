@@ -24,5 +24,22 @@
 4. scheduler
 
 ### kubectl
+1. cli tool
+2. kubectl cluster-info 
 
+### docker vs containerD
+
+1. kube -> CRI -> containerd -> docker
+2. kube -> CRI -> containerd
+3. ctr -> debugging containerd
+3. nerdctl - CLI for containerD, runs like docker in cli
+4. crictrl - CLI for CRI compatible container runtimes (for container debugging)
+5. crictrl - aware of pods
+
+#### Summary
+||ctr|nerdctl|crictl|
+|-|-|-|-|
+|Purpose|Debugging|General Purpose|Debugging|
+|Community|ContainerD|ContainerD|Kubernetes|
+|Works With|ContainerD|ContainerD|All CRI Compatible Runtimes|
 
