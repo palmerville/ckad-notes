@@ -10,7 +10,8 @@
 3. Scheduler - distributor of load to workers 
 4. controllers - brain behind orchestration, aware when containers go to shit
 5. runtime - software for running containers like docker
-6. kubelet - agent that runs on nodes, makes sure that containers running as expected
+6. kubelet - agent that runs on nodes, makes sure that containers 
+running as expected
 
 ### Master vs Worker Nodes
 #### Worker Has:
@@ -43,3 +44,32 @@
 |Community|ContainerD|ContainerD|Kubernetes|
 |Works With|ContainerD|ContainerD|All CRI Compatible Runtimes|
 
+### Pods recap
+- kubectl nginx --image nginx
+- k get pods
+
+### YAML recap
+```yml
+apiVersion: v1          # String values
+kind: Pod
+metadata:               # dictionary (2 spaces for tab-ish)
+  name: myapp-pod
+  labels:
+    app: mypod
+    type: front-end
+spec:
+  containers:                   # List/Array (of containers)
+    - name: nginx-container     # dash indicates it is item of list
+      image: nginx
+```
+|Kind|Version|
+|-|-|
+|Pod|v1|
+|Service|v1|
+|ReplicaSet|apps/v1|
+|Deployment|apps/v1|
+#### Yaml notes
+- cant add more to metadata than what k8s supports
+- labels are for keyval pairs user decides 
+- k run for pods
+- k create for others
