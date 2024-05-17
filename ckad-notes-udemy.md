@@ -73,3 +73,35 @@ spec:
 - labels are for keyval pairs user decides 
 - k run for pods
 - k create for others
+
+#### Practical exam on Pods notes
+- If you are not given a pod definition file, you may extract the definition to a file using the below command:
+```
+kubectl get pod <pod-name> -o yaml > pod-definition.yaml
+```
+Then edit the file to make the necessary changes, delete, and re-create the pod.
+
+- To modify the properties of the pod, you can utilize the kubectl edit pod <pod-name> command. Please note that only the properties listed below are editable.
+
+  - spec.containers[*].image
+
+  - spec.initContainers[*].image
+
+  - spec.activeDeadlineSeconds
+
+  - spec.tolerations
+
+  - spec.terminationGracePeriodSeconds
+
+### ReplicaSet
+
+
+
+
+
+
+
+
+
+
+
