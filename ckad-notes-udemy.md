@@ -244,3 +244,31 @@ spec:
 
 # Configuration
 
+### Container images
+
+- Didnt feeling noting a lot here.
+- only notable thing I stumbled upon is this:
+  - To get the base OS of an image (has to be unix-based ig.)
+    ```bash
+      $ docker run <image_name> cat /etc/*release*
+    ```
+- other notable quirks between docker CLI and k8s (kubectl)
+  - order of placing command options, so always consult --help
+  - no `--dry-run=client` to save you here in docker land
+  - `docker run -p HOST:CONTAINER IMAGE_NAME` - not much of guide in help menu about this.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
