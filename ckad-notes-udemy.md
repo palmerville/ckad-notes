@@ -257,11 +257,47 @@ spec:
   - no `--dry-run=client` to save you here in docker land
   - `docker run -p HOST:CONTAINER IMAGE_NAME` - not much of guide in help menu about this.
 
-
-
-
-
-
+- Override default command... I'm thinkin' busybox here.
+    ```bash
+      $ docker run <image_name> [command]
+      $ docker run ubuntu sleep 5
+    ```
+    OR
+    ```docker
+      FROM Ubuntu
+      CMD sleep 5 # CMD command param
+    ```
+    OR
+    ```docker
+      FROM Ubuntu
+      CMD ["sleep", "5"] # CMD ["command", "param"]
+    ```
+- Parameterized way (ENTRYPOINT)
+    ```docker
+      FROM Ubuntu
+      ENTRYPOINT ["sleep"]
+    ```
+    then
+    ```bash
+      $ docker run <image_name> [ARGS]
+      $ docker run ubuntu-sleeper 10
+    ```
+- What if no args, need default args
+    ```docker
+      FROM Ubuntu
+      ENTRYPOINT ["sleep"]
+      CMD ["5"]
+    ```
+    same as 
+    ```bash
+      $ docker run ubuntu-sleeper 5  #default
+      $ docker run ubuntu-sleeper 10 #args provided
+    ```
+- if one needs to override the entry point during runtime
+    ```bash
+        #sleep2.0 is an imaginary command
+      $ docker run --entrypoint sleep2.0 ubuntu-sleeper 10
+    ```
 
 
 
