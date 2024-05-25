@@ -298,6 +298,29 @@ spec:
         #sleep2.0 is an imaginary command
       $ docker run --entrypoint sleep2.0 ubuntu-sleeper 10
     ```
+- Kubernetes relation to Docker commands:
+    ```bash
+        #sleep2.0 is an imaginary command
+      $ docker run --entrypoint sleep2.0 ubuntu-sleeper 10
+    ```
+    in pod.yaml
+    ```yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: ubuntu-sleeper-pod
+        specs:
+          - name: ubuntu-sleeper
+            image: ubuntu-sleeper
+            command: ["sleep2.0"]
+            args: ["10"]
+    ```
+
+- Lab Notes:
+    - On "what commands run at pod startup":
+        - doesnt matter what the dockerfile say, look and pod spec
+        - if only has command or has args, that will be the answer.
+        - command always override image default CMD & ENTRYPOINT
 
 
 
