@@ -322,12 +322,57 @@ spec:
         - if only has command or has args, that will be the answer.
         - command always override image default CMD & ENTRYPOINT
 
+# ConfigMaps
+- imperative:
+    ```bash
+        $kubectl create configmap \ 
+            <config-name> --from-literal=<key>=<value>
+        $kubectl create configmap \ 
+            app-config --from-literal=APP_COLOR=blue
+    ```
 
+- declarative:
+    ```yaml
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+            name: app-config
+        data:
+            APP_COLOR: blue
+            APP_MODE: prod
+    ```
 
+- view by: 
 
-
-
-
+    ```bash
+        $kubectl get configmaps 
+        $kubectl describe configmaps 
+    ```
+- configmaps in Pods (env vs envFrom)
+    ```yaml
+        envFrom:
+          - configMapRef:
+              name: app-config #pertains to configmap resource "app-config"
+    ```
+    injecting just as single ENV variable 
+    ```yaml
+        env:
+          - name:
+            valueFrom:
+              configMapKeyRef:
+                name: app-config #pertains to configmap resource "app-config"
+                key: APP_COLOR
+    ```
+    inject from volume:
+    ```yaml
+        volumes:
+        - name: app-config-volume
+          configMap:
+            name: app-config
+    ```
+- Labs practice notes:
+    - Never forget when editing first parts of known list, put "-"
+    - because I was editing the first entry within containers list, wont work without the "-"
 
 
 
