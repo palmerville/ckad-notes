@@ -357,7 +357,7 @@ spec:
     injecting just as single ENV variable 
     ```yaml
         env:
-          - name:
+          - name: APP_COLOR
             valueFrom:
               configMapKeyRef:
                 name: app-config #pertains to configmap resource "app-config"
@@ -374,5 +374,80 @@ spec:
     - Never forget when editing first parts of known list, put "-"
     - because I was editing the first entry within containers list, wont work without the "-"
 
+# Secrets
 
+- imperative:
+    ```bash
+        $kubectl create secret generic \ 
+            <secret-name> --from-literal=<key>=<value>
+        $kubectl create secret generic \ 
+            app-secret --from-literal=DB_Host=mysql \
+                       --from-literal=DB_User=root 
+                       --from-literal=DB_Password=paswrd
+        OR via file
+        $kubectl create secret generic \ 
+            app-secret --from-file=app-secret.properties
+    ```
+
+- declarative:
+    ```yaml
+        apiVersion: v1
+        kind: Secret
+        metadata:
+            name: app-secret
+        data:
+          DB_Host=mysql
+          DB_User=root
+          DB_Password=paswrd
+    ```
+    ENCODE IT!!
+    ```bash
+        $echo -n 'mysql' | base64
+    ```
+    ```yaml
+        apiVersion: v1
+        kind: Secret
+        metadata:
+            name: app-secret
+        data:
+          DB_Host=bXlzcWw=
+          DB_User=cm9vdA==
+          DB_Password=cGFzd3Jk
+    ```
+- view by: 
+
+    ```bash
+        $kubectl get secrets
+        $kubectl describe secrets #hides values
+        $kubectl get secret app-secret -o yaml #shows values encoded
+        $echo -n 'mysql' | base64 --decode #decode the encoded values
+    ```
+- configmaps in Pods (env vs envFrom)
+    ```yaml
+        envFrom:
+          - secretRef:
+              name: app-secret #pertains to secret resource "app-secret"
+    ```
+    injecting just as single ENV variable 
+    ```yaml
+        env:
+          - name: DB_Password
+            valueFrom:
+              secretKeyRef:
+                name: app-secret #pertains to secret resource "app-secret"
+                key: DB_Password
+    ```
+    inject from volume:
+    ```yaml
+        volumes:
+        - name: app-secret-volume
+          configMap:
+            name: app-secret
+    ```
+## Secrets Notes:
+- Secrets are not Encrypted only Encoded.
+- Never check-in secrets objects to SCM
+- Secretes are not Encrypted in etcd
+- Anyone who can create pods/deployments in the same namespace can access the secrets (duh?)
+    - Consider Secrets - RBAC or 3rd party secrets store
 
