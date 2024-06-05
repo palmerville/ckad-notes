@@ -487,4 +487,39 @@ spec:
         $docker run --priveleged ubuntu
     ```
 # Security Contexts
+- Add a security context on Pod level
+```yml
+apiVersion: v1          # String values
+kind: Pod
+metadata:               # dictionary (2 spaces for tab-ish)
+  name: myapp-pod
+  labels:
+    app: mypod
+    type: front-end
+spec:
+  securityContext:
+    runAsUser: 1000
+  containers:                   # List/Array (of containers)
+    - name: nginx-container     # dash indicates it is item of list
+      image: nginx
+```
+
+- Add a security context on container level
+```yml
+apiVersion: v1          # String values
+kind: Pod
+metadata:               # dictionary (2 spaces for tab-ish)
+  name: myapp-pod
+  labels:
+    app: mypod
+    type: front-end
+spec:
+  containers:                   # List/Array (of containers)
+    - name: nginx-container     # dash indicates it is item of list
+      image: nginx
+      securityContext:
+        runAsUser: 1000
+        capabilities:           # NOTE: capabilites are only available at container level NOT Pod
+          add: ["MAC_ADMIN"]
+```
 
