@@ -526,3 +526,27 @@ spec:
 - Lab notes:
     - When specified to run process as root user, no need to add any `runAsUser`, it is int64 field
     - Remember that capabilities only are for CONTAINER LEVEL!!
+
+# Service Accounts
+- 2 kinds of accounts in k8s - User Accounts and Service Accounts
+    ```bash
+        $kubectl create serviceaccount dashboard-sa
+    ```
+- When k8s create Service account, it first creates the object, then token for SA
+- It then creates secret object and stores that token in that secret.
+- Then the secret object is linked to the Service account
+
+
+    ```bash
+        $kubectl describe secret dashboard-sa-token-kbbm
+        # lists the token from inside the secret
+    ```
+- In pod definition, add `serviceAccountName`
+- When there is deployment, you can edit the pod directly and the deployment will handle pod deletion
+- If no deployments, manually delete the pod before modifying the service account.
+
+- Lab notes:
+    - to create an authorization token for a created service account, do below:
+    ```bash
+        $kubectl create token <service-account-name>
+    ```
