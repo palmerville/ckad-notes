@@ -523,3 +523,6 @@ spec:
           add: ["MAC_ADMIN"]
 ```
 
+- Lab notes:
+    - When specified to run process as root user, no need to add any `runAsUser`, it is int64 field
+    - Remember that capabilities only are for CONTAINER LEVEL!!
