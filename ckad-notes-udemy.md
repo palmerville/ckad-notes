@@ -451,3 +451,40 @@ spec:
 - Anyone who can create pods/deployments in the same namespace can access the secrets (duh?)
     - Consider Secrets - RBAC or 3rd party secrets store
 
+# Docker Security
+- Containers and host share the same kernel
+- Containers are isolated using namespaces in Linux
+- Host has its own namespae
+- Containers' process are run on host but in container's namespace
+- Docker processes can only see within container only
+- Docker host has set of users
+- By default, Docker processes within containers as root
+- To run processes using another user:
+    ```bash
+        $docker run --user=1000 ubuntu sleep 3600
+    ```
+- Another way is to define user in Dockerfile to run as certain user during container creation
+    ```docker
+      FROM Ubuntu
+      USER 1000
+    ```
+- root user in Docker container is different from root user on Host
+- Docker limit the abilities of root user within the container
+- Docker uses Linux capabilities to implement this
+- See full list of Linux capabilities in:
+    `/usr/include/linux/capability.h`
+- By default Docker runs a container with limited set of capabilities, hence can't disrupt host
+- Override this: 
+    ```bash
+        $docker run --cap-add MAC_ADMIN ubuntu
+    ```
+    OR
+    ```bash
+        $docker run --cap-drop KILL ubuntu
+    ```
+    OR 
+    ```bash
+        $docker run --priveleged ubuntu
+    ```
+# Security Contexts
+
