@@ -550,3 +550,113 @@ spec:
     ```bash
         $kubectl create token <service-account-name>
     ```
+
+# Resource Requirements
+- kube-scheduler manages in which node the pod is allocated to depending on the resource available
+- Resource requests - min amount of resource needed
+    - for pod allocation
+- 1 cpu = 1 vCPU
+
+    in pod.yaml
+    ```yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: simple-webapp-color
+          labels:
+            name: simple-webapp-color
+        specs:
+          - name: simple-webapp-color
+            image: simple-webapp-color
+            ports:
+              - containerPort: 8080
+            resources:
+              requests:
+                memory: "1Gi"
+                cpu: 1
+              limits:
+                memory: "2Gi"
+                cpu: 2
+    ```
+
+### Notes
+- in example above, limits is higher than requests
+- Request will start pod with 1 Gi, 1 cpu resource
+- Limits can be higher since ideally pod is housed in Node with way higher resources
+- If cpu utilization exceed allocated (2 vCPU), pod will throttle to not go beyond cpu limit
+- If memory usage exceed allocated (2 Gi), pod can go over a bit, 
+    but if constantly hitting this, OOM kill will happen.
+#### Scenarios
+- (2 pods in a node)
+##### CPU
+- No Request, No Limit
+    - 1 pod can starve other pods from even starting up.
+- No Request, Limit
+    - K8s will set Request = Limit
+    - will guarantee resources for pods, but will not use full potential of a Node
+- Request, Limit
+    - will guarantee resources for pods, but will not use full potential of a Node
+- Request, No Limit
+    - (Most Ideal) will guarantee resources for pods, will maximize Node CPU cycles
+
+##### Memory
+- same idea with CPU scenarios
+- except pod gets killed in the instance than pod exceeds max node memory
+
+## Limit Ranges
+- Guarantee defaults for pods created without a resource requests and limit
+- applies to Namespace level.
+- Enforced when pods are created - Does not affect existing pods!
+- CPU:
+    ```yaml
+        apiVersion: v1
+        kind: LimitRange
+        metadata:
+          name: cpu-resource-constraint
+        specs:
+        - default:
+            cpu: 500m
+          defaultRequest:
+            cpu: 500m
+          max:
+            cpu: "1"
+          min:
+            cpu: 100m
+          type: Container
+    ```
+- Memory
+    ```yaml
+        apiVersion: v1
+        kind: LimitRange
+        metadata:
+          name: memory-resource-constraint
+        specs:
+        - default:
+            memory: 1Gi
+          defaultRequest:
+            memory: 1Gi
+          max:
+            memory: 1Gi
+          min:
+            memory: 500m
+          type: Container
+    ```
+
+## Resource Quotas
+- Manage the resource allocation per Namespace
+- I guess to not max out the Node resources
+    ```yaml
+        apiVersion: v1
+        kind: ResourceQuota
+        metadata:
+          name: my-resource-quota
+        spec:
+          hard:
+            requests.cpu: 4
+            requests.memory: 4Gi
+            limits.cpu: 10
+            limits.memory: 10Gi
+    ```
+
+
+
