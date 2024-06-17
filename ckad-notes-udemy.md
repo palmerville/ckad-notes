@@ -728,3 +728,85 @@ spec:
       $ kubectl taint nodes node1 app=blue:NoSchedule-
     ```
     - Control plane was untainted, but more interestingly it did not have "value", only "key"
+
+# Node Selectors
+- For assigning specifically which node a pod should be scheduled. Likewise for Node Affinity
+    ```yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: myapp-pod
+        specs:
+          containers:
+          - name: nginx
+            image: nginx
+          nodeSelectors:
+            size: Large
+    ```
+    Set the Labels in Node:
+    ```bash
+      $ kubectl label nodes <node-name> <label-key>=<label-value>
+      $ kubectl label nodes node01 size=Large
+    ```
+- Node Selector limitations:
+    - What if we need the pod to be in either Large or Medium?
+    - Or NOT Small?
+
+# Node Affinity
+- Finer control than Node Selectors
+- For the same previous Node Selector sample, more complex syntax is required on Node Affinity
+    ```yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: myapp-pod
+        specs:
+          containers:
+          - name: nginx
+            image: nginx
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                - key: size
+                  operator: In
+                  values:
+                  - Large
+                  - Medium
+    ```
+- Another sample for NotIn operator. See docs for more info on operators
+    ```yaml
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                - key: size
+                  operator: NotIn
+                  values:
+                  - Small
+    ```
+### Node affinity types:
+- Defines the behavior of the scheduler with respect to node affinity and stages in lifecycle of pod
+- Types:
+    - Available:
+        - requiredDuringSchedulingIgnoredDuringExecution
+        - preferredDuringSchedulingIgnoredDuringExecution
+    - Planned:
+        - requiredDuringSchedulingRequiredDuringExecution
+
+||DuringScheduling|DuringExecution|
+|-|-|-|
+|Type 1|Required|Ignored|
+|Type 2|Preferred|Ignored|
+|Type 3|Required|Required|
+
+- What above table means:
+    - Type 1: If no matching exists, not scheduled, won't evict even with affinty changes
+    - Type 2: Try best to match or anywhere, won't evict even with affinty changes
+    - Type 3: Evicts pods that are running on nodes which does not match affinity
+
+- Lab Notes:
+    - Node affinity change was applied on deployment, not on pods.
+    - Hence why pods got redeployed automatically
