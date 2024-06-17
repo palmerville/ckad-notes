@@ -722,3 +722,9 @@ spec:
     ```bash
       $ kubectl describe node kubemaster | grep Taint
     ```
+- Lab notes:
+    - Task on removing taints
+    ```bash
+      $ kubectl taint nodes node1 app=blue:NoSchedule-
+    ```
+    - Control plane was untainted, but more interestingly it did not have "value", only "key"
