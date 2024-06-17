@@ -701,7 +701,7 @@ spec:
             image: nginx
           tolerations:
           - key: "app"
-            operator: "equals"
+            operator: "Equal"
             value: "blue"
             effect: "NoSchedule"
     ```
