@@ -566,6 +566,7 @@ spec:
           labels:
             name: simple-webapp-color
         specs:
+          containers:
           - name: simple-webapp-color
             image: simple-webapp-color
             ports:
@@ -658,5 +659,66 @@ spec:
             limits.memory: 10Gi
     ```
 
+# Taints and Tolerations
+- Analogy:
+    - Taint is mosquito lotion. Apply to yourself
+    - Mosquitoes, is intolerant to the lotion so it will not land on you
+    - Say cockroaches, it will be tolerant to the lotion only meant for mosquitoes 
+- In K8s:
+    - Person is a Node, and bugs are Pods
+    - Not exactly for security
+    - Used to set restrictions on what pods can be scheduled in a node
+    - By default, pods do not have tolerations, so any tainted Node will not schedule default pod
+        - Since no pod can tolerant the tainted node
+- Summary:
+    - Taints are set on Nodes, Tolerations are set on Pods
 
+- Setting Taint
+    ```bash
+      $ kubectl taint nodes node-name key=value:taint-effect
+    ```
+    ```
+      Taint-effects: NoSchedule | Prefer | NoExecute
+    ```
+    ```bash
+      $ kubectl taint nodes node1 app=blue:NoSchedule
+    ```
+- Setting Tolerations
+    - Sample Taint:
+    ```bash
+      $ kubectl taint nodes node1 app=blue:NoSchedule
+    ```
+    - In pod spec:
 
+    ```yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: myapp-pod
+        specs:
+          containers:
+          - name: nginx
+            image: nginx
+          tolerations:
+          - key: "app"
+            operator: "equals"
+            value: "blue"
+            effect: "NoSchedule"
+    ```
+    ```
+        NOTE: Always encode the tolerations values with DOUBLE QUOTES!!!
+    ```
+- Understanding `NoExecute`:
+    - Scenario where 2 pods running where 1 pod is tolerated and node just got tainted.
+    - The other untolerated pod gets evicted from the tainted node
+
+- Tolerated pod does not guarantee that it will be scheduled in a tainted Node
+- Only that the Node will only accept specifically tolerated pod
+- For guaranteed scheduling of pods into a node, NODE AFFINITY is concept to check
+
+- So far these have been only dealt on worker nodes. How about the Master node?
+- K8s scheduler does not schedule pods in the Master. 
+- Because at cluster startup, the scheduler taints the Master taints the Master node.
+    ```bash
+      $ kubectl describe node kubemaster | grep Taint
+    ```
