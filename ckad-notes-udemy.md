@@ -810,3 +810,28 @@ spec:
 - Lab Notes:
     - Node affinity change was applied on deployment, not on pods.
     - Hence why pods got redeployed automatically
+
+# Multi-container Pods
+
+### Common Patterns:
+    1. Sidecar
+        - A logging service for your application service
+    2. Adapter
+        - Before sending the logs, conversion service act as adapter to harmonize log format
+    3. Ambassador
+        - Will proxy the traffic to persist to proper environment DBs
+
+Lab Notes:
+- Part of a lab question is multi-container with 1 container image as busybox
+    - Ensured that RestartPolicy = Never, was not mentioned in instructions, so it crashes
+- very confusing initially, when checking /log/app.log 
+    - don't look into the kibana service, view the log file in the app container
+- Personal Note: Kibana looks nice, not sure about pricing, but it's similar to Splunk.
+
+### Init Containers
+- just like normal containers, but declared separately in `initContainers: ` section.
+- in Labs, I found out by errors that `name` is mandatory, not just the image name and command
+- `initContainers`, if it fails, kubelet will restart the init container till it succeeds.
+    - Unless pod has `RestartPolicy`
+
+
