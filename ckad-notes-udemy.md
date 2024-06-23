@@ -814,17 +814,17 @@ spec:
 # Multi-container Pods
 
 ### Common Patterns:
-    1. Sidecar
-        - A logging service for your application service
-    2. Adapter
-        - Before sending the logs, conversion service act as adapter to harmonize log format
-    3. Ambassador
-        - Will proxy the traffic to persist to proper environment DBs
+1. Sidecar
+    - A logging service for your application service
+2. Adapter
+    - Before sending the logs, conversion service act as adapter to harmonize log format
+3. Ambassador
+    - Will proxy the traffic to persist to proper environment DBs
 
 Lab Notes:
 - Part of a lab question is multi-container with 1 container image as busybox
     - Ensured that RestartPolicy = Never, was not mentioned in instructions, so it crashes
-- very confusing initially, when checking /log/app.log 
+- very confusing initially, when checking `/log/app.log`
     - don't look into the kibana service, view the log file in the app container
 - Personal Note: Kibana looks nice, not sure about pricing, but it's similar to Splunk.
 
@@ -834,4 +834,6 @@ Lab Notes:
 - `initContainers`, if it fails, kubelet will restart the init container till it succeeds.
     - Unless pod has `RestartPolicy`
 
+# Observability
+## Readiness and Liveness Probes
 
