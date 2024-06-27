@@ -836,4 +836,14 @@ Lab Notes:
 
 # Observability
 ## Readiness and Liveness Probes
-
+### Recap on Pod Lifecycle:
+- Pod Status: Where the pod is in its lifecycle. Only a high level summary of a pod.
+    1. Pending - upon creation while scheduler decides which node to put the pod
+        - if scheduler can't decide where to place the pod, it will remain PENDING
+    2. ContainerCreating - when pod get scheduled. Also image pulling and container starts.
+    3. Running - If all prior stages are good, Running status is reached.
+- Pod Conditions: (Represented as array of True/False values)
+    1. PodScheduled: when a pod is scheduled.
+    2. Initialized: when pod is initialized. 
+    3. ContainersReady: when all containers in pod is Ready
+    4. Ready: when pod itself is ready
