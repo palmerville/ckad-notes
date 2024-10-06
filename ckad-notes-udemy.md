@@ -1,8 +1,13 @@
 # Core Concepts
 ### Basics
-1. Nodes - worker, where kube is installed.
-2. Cluster - group of nodes
-3. Master - prolly control plane??
+- Nodes - worker, where kube is installed.
+-  Cluster - group of nodes
+- Master - control plane
+  - Kube-apiserver
+  - Etcd
+  - Controller
+  - Scheduler
+ 
 
 ### Components
 1. API Server - frontend of kube
